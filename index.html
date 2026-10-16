@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Alertă de petrecere! 🎉</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    :root{--bg:#dff1ff;--bg2:#f4faff;--card:#ffffff;--text:#2f3a4a;--muted:#7b8798;--accent:#ff7a8a;--accent2:#ffd36e;--mint:#7fd8be;--line:#e8eef5;--ok:#35b98a;--no:#8fa0b5;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+    :root{color-scheme:light}
+    html{scroll-padding-top:env(safe-area-inset-top,0px)}
+    *{box-sizing:border-box}
+    body{margin:0;color:var(--text);font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;min-height:100vh;background:linear-gradient(160deg,var(--bg),var(--bg2));overflow-x:hidden}
+    .wrap{max-width:520px;margin:0 auto;padding:26px 18px 70px;text-align:center;position:relative;z-index:2}
+    .fx{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+    .b{position:absolute;bottom:-80px;font-size:34px;animation:rise linear infinite;opacity:.85}
+    @keyframes rise{to{transform:translateY(-120vh) rotate(25deg)}}
+    .up{opacity:0;transform:translateY(24px);animation:up .7s cubic-bezier(.2,.9,.3,1.2) forwards}
+    @keyframes up{to{opacity:1;transform:none}}
+    .tag{display:inline-block;background:var(--accent2);color:#6b4a00;font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;padding:6px 14px;border-radius:99px;animation:wob 2.4s ease-in-out infinite}
+    @keyframes wob{50%{transform:rotate(-3deg) scale(1.05)}}
+    h1{font-size:34px;margin:14px 0 6px;line-height:1.1}
+    .sub{color:var(--muted);margin:0 0 20px;font-size:15px}
+    .photo{width:230px;height:230px;border-radius:50%;margin:0 auto 22px;border:6px solid var(--card);box-shadow:0 0 0 4px var(--mint),0 14px 32px rgba(127,216,190,.45);overflow:hidden;opacity:0;animation:pop 1s .3s cubic-bezier(.3,1.6,.5,1) forwards,bob 3.5s 1.4s ease-in-out infinite}
+    @keyframes pop{from{transform:scale(0) rotate(-200deg);opacity:0}to{transform:none;opacity:1}}
+    @keyframes bob{50%{transform:translateY(-8px) rotate(1.5deg)}}
+    .photo img{width:100%;height:100%;object-fit:cover;display:block}
+    .hat{font-size:48px;display:block;margin-bottom:-26px;position:relative;z-index:3;animation:hat 1s .9s both}
+    @keyframes hat{from{transform:translateY(-120px) rotate(40deg);opacity:0}to{transform:none;opacity:1}}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;margin:14px 0;text-align:left;box-shadow:0 6px 20px rgba(80,110,150,.07)}
+    .row{display:flex;gap:12px;align-items:flex-start;margin:8px 0}
+    .row b{display:block;font-size:15px}.row span{color:var(--muted);font-size:14px}
+    .ico{font-size:24px}
+    .map-container{width:100%;height:180px;border-radius:12px;overflow:hidden;margin-top:10px;border:1px solid var(--line)}
+    .map-container iframe{width:100%;height:100%;border:0}
+    .q{font-weight:700;font-size:17px;display:block;margin-bottom:2px}
+    .hint{color:var(--muted);font-size:13px}
+    input[type=text], input[type=password]{width:100%;padding:14px;border-radius:14px;border:2px solid var(--line);background:var(--bg);color:var(--text);font-size:16px;margin:10px 0 12px;outline:none;transition:.2s}
+    input[type=text]:focus, input[type=password]:focus{border-color:var(--mint)}
+    .btns{display:flex;gap:12px;position:relative;min-height:52px}
+    button{flex:1;padding:14px;border:0;border-radius:14px;font-size:17px;font-weight:800;cursor:pointer;font-family:inherit;transition:transform .15s}
+    button:active{transform:scale(.95)}
+    .yes{background:var(--ok);color:#fff;animation:pulse 1.8s infinite}
+    @keyframes pulse{50%{box-shadow:0 0 0 8px rgba(53,185,138,.18)}}
+    .no{background:var(--no);color:#fff}
+    .msg{margin-top:14px;padding:14px;border-radius:14px;font-size:16px;display:none}
+    .msg.show{display:block;animation:up .5s forwards}.msg.good{background:rgba(53,185,138,.14);color:#1f8f69}.msg.bad{background:rgba(255,122,138,.14);color:#d4495c}
+    .lock{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:5;width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--line);font-size:20px;display:block;flex:none;padding:0;box-shadow:0 4px 14px rgba(80,110,150,.25)}
+    .conf{position:fixed;top:-20px;font-size:24px;z-index:9;pointer-events:none;animation:fall 2.2s ease-in forwards}
+    @keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.8}}
+    #admin{display:none;text-align:left}
+    .ahead{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+    .ahead h2{margin:0;font-size:20px}.ahead small{color:var(--muted)}
+    .stats{display:flex;gap:10px;margin:12px 0}
+    .stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;text-align:center;font-size:13px;color:var(--muted)}
+    .stat b{font-size:24px;display:block;color:var(--text)}
+    .tw{overflow-x:auto}
+    table{width:100%;border-collapse:collapse;font-size:14px}
+    th,td{padding:8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+    .exp{background:var(--accent);color:#fff;margin:8px 0;width:100%}
+    .back{background:var(--card);color:var(--text);border:1px solid var(--line);width:100%}
+  </style>
+</head>
+<body>
+
+  <div
+    class="fx"
+    id="fx">
+  </div>
+
+  <div
+    class="wrap">
+
+    <div
+      id="invite">
+
+      <span
+        class="tag up">
+        🚨 Alertă de petrecere
+      </span>
+
+      <h1
+        class="up"
+        style="animation-delay:.15s">
+        Eu îmbătrânesc.
+        <br>
+        Tu vii la tort. 🎂
+      </h1>
+
+      <p
+        class="sub up"
+        style="animation-delay:.25s">
+        Ai fost selectat după un proces riguros de selecție: te știu.
+      </p>
+
+      <span
+        class="hat">
+        🥳
+      </span>
+
+      <div
+        class="photo">
+        <img
+          alt="Sărbătoritul"
+          src="image/eu.jpg">
+      </div>
+
+      <div
+        class="card up"
+        style="animation-delay:.9s">
+
+        <div
+          class="row">
+          <div
+            class="ico">
+            📅
+          </div>
+          <div>
+            <b>
+              Vineri, 18 decembrie 2026
+            </b>
+            <span>
+              Ora 16:30 (nu 17:00, te văd eu)
+            </span>
+          </div>
+        </div>
+
+        <div
+          class="row">
+          <div
+            class="ico">
+            📍
+          </div>
+          <div style="flex: 1;">
+            <b>
+              Dumbrava
+            </b>
+            <span>
+              strada se afla pe loc)
+            </span>
+            <div class="map-container">
+<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13244.463982198544!2d28.732693670739156!3d47.045000799034746!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40cbd66d506feba5%3A0x7b5d3fa48ea77434!2z0JTRg9C80LHRgNCw0LLQsCwg0JzQvtC70LTQvtCy0LA!5e0!3m2!1sru!2sfr!4v1792181596879!5m2!1sru!2sfr" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>            </div>
+          </div>
+        </div>
+
+        <div
+          class="row">
+          <div
+            class="ico">
+            🍕
+          </div>
+          <div>
+            <b>
+              Mâncare, muzică, voie bună
+            </b>
+            <span>
+              Cadoul tău preferat: prezența ta. Dar și un plic merge 😏
+            </span>
+          </div>
+        </div>
+
+      </div>
+
+      <div
+        class="card up"
+        style="animation-delay:1.1s">
+
+        <span
+          class="q">
+          Vii sau mă lași cu tortul singur?
+        </span>
+
+        <span
+          class="hint">
+          Scrie numele și prenumele, ca să știu pe cine caut dacă dispari.
+        </span>
+
+        <input
+          id="nm"
+          type="text"
+          placeholder="Nume și Prenume"
+          autocomplete="name">
+
+        <div
+          class="btns">
+          <button
+            class="yes"
+            id="by">
+            DA, vin! 🎉
+          </button>
+          <button
+            class="no"
+            id="bn">
+            NU 😢
+          </button>
+        </div>
+
+        <div
+          id="msg"
+          class="msg">
+        </div>
+
+      </div>
+
+    </div>
+
+    <div
+      id="login"
+      style="display:none">
+
+      <div
+        class="card up">
+
+        <span
+          class="q">
+          🔒 Autentificare admin
+        </span>
+
+        <input
+          id="lu"
+          type="text"
+          placeholder="Utilizator"
+          autocomplete="username"
+          autocapitalize="none">
+
+        <input
+          id="lp"
+          type="password"
+          placeholder="Parolă"
+          autocomplete="current-password">
+
+        <div
+          class="btns">
+          <button
+            class="yes"
+            id="lg">
+            Intră
+          </button>
+          <button
+            class="no"
+            id="lc">
+            Anulează
+          </button>
+        </div>
+
+        <div
+          id="lm"
+          class="msg">
+        </div>
+
+      </div>
+
+    </div>
+
+    <div
+      id="admin">
+
+      <div
+        class="ahead">
+
+        <svg
+          width="52"
+          height="52"
+          viewBox="0 0 52 52">
+          <defs>
+            <linearGradient
+              id="lgd"
+              x1="0"
+              y1="0"
+              x2="1"
+              y2="1">
+              <stop
+                offset="0"
+                stop-color="#ffd36e"/>
+              <stop
+                offset="1"
+                stop-color="#ff7a8a"/>
+            </linearGradient>
+          </defs>
+          <circle
+            cx="26"
+            cy="26"
+            r="25"
+            fill="url(#lgd)"/>
+          <path
+            d="M14 38V16l12 14 12-14v22"
+            fill="none"
+            stroke="#fff"
+            stroke-width="4"
+            stroke-linecap="round"
+            stroke-linejoin="round"/>
+          <circle
+            cx="26"
+            cy="10"
+            r="3"
+            fill="#fff"/>
+        </svg>
+
+        <div>
+          <h2>
+            Panou Admin
+          </h2>
+          <small>
+            Cine vine și cine fuge
+          </small>
+        </div>
+
+      </div>
+
+      <div
+        class="stats">
+        <div
+          class="stat">
+          <b
+            id="sT">
+            0
+          </b>
+          Total
+        </div>
+        <div
+          class="stat">
+          <b
+            id="sY">
+            0
+          </b>
+          DA
+        </div>
+        <div
+          class="stat">
+          <b
+            id="sN">
+            0
+          </b>
+          NU
+        </div>
+      </div>
+
+      <button
+        class="exp"
+        id="ex">
+        ⬇ Exportă în Excel (.xlsx)
+      </button>
+
+      <div
+        class="card tw">
+        <table>
+          <thead>
+            <tr>
+              <th>
+                Nume și Prenume
+              </th>
+              <th>
+                Răspuns
+              </th>
+              <th>
+                Data
+              </th>
+            </tr>
+          </thead>
+          <tbody
+            id="tb">
+          </tbody>
+        </table>
+      </div>
+
+      <button
+        class="back"
+        id="bk">
+        ← Înapoi la invitație
+      </button>
+
+    </div>
+
+  </div>
+
+  <button
+    class="lock"
+    id="lk"
+    title="Admin">
+    🔒
+  </button>
+
+<script>
+(function() {
+  var $ = function(i) {
+    return document.getElementById(i);
+  };
+
+  var dodge = 0;
+  
+  var em = ['🎈', '🎉', '🎂', '🍰', '🥳', '🎁', '✨'];
+
+  for (var i = 0; i < 12; i++) {
+    var s = document.createElement('span');
+    s.className = 'b';
+    s.textContent = em[i % em.length];
+    s.style.left = (Math.random() * 95) + '%';
+    s.style.animationDuration = (9 + Math.random() * 9) + 's';
+    s.style.animationDelay = (Math.random() * 8) + 's';
+    $('fx').appendChild(s);
+  }
+  
+  function confetti() {
+    var c = ['🎉', '🎊', '✨', '🎈', '🥳'];
+    for (var i = 0; i < 40; i++) {
+      var e = document.createElement('span');
+      e.className = 'conf';
+      e.textContent = c[i % c.length];
+      e.style.left = (Math.random() * 100) + 'vw';
+      e.style.animationDelay = (Math.random() * .8) + 's';
+      document.body.appendChild(e);
+      setTimeout(function(x) {
+        x.remove();
+      }, 3400, e);
+    }
+  }
+
+  function show(t, ok) {
+    var m = $('msg');
+    m.className = 'msg';
+    void m.offsetWidth;
+    m.textContent = t;
+    m.className = 'msg show ' + (ok ? 'good' : 'bad');
+  }
+
+  function getRows() {
+    try {
+      return JSON.parse(localStorage.getItem('rsvp_list') || '[]');
+    } catch(e) {
+      return [];
+    }
+  }
+
+  function saveRow(n, ans) {
+    var rows = getRows();
+    rows.unshift({
+      name: n,
+      answer: ans,
+      at: new Date().toISOString()
+    });
+    localStorage.setItem('rsvp_list', JSON.stringify(rows));
+  }
+
+  async function answer(ans) {
+    var n = $('nm').value.trim().replace(/\s+/g, ' ');
+    if (n.split(' ').length < 2) {
+      show('Hei! Și prenumele, nu doar „Ion”. Aici nu e armata 😄', false);
+      return;
+    }
+    try {
+      saveRow(n, ans);
+      if (ans === 'DA') {
+        show(n + ', ai răspuns DA ✅ Te-am trecut pe listă! Tortul zice că te iubește deja 🎂', true);
+        confetti();
+      } else {
+        show(n + ', ai răspuns NU ❌ Am notat în caiet. Tortul e dezamăgit, dar eu te iert... poate 😢', false);
+      }
+    } catch(e) {
+      show('Ups, răspunsul nu s-a salvat. Mai încearcă o dată!', false);
+    }
+  }
+
+  $('by').onclick = function() {
+    answer('DA');
+  };
+
+  function run(e) {
+    if (dodge >= 4) return;
+    dodge++;
+    if (e && e.preventDefault) e.preventDefault();
+    var b = $('bn');
+    var x = (Math.random() * 140 - 70), y = (Math.random() * 50 - 25);
+    b.style.transform = 'translate(' + x + 'px,' + y + 'px) rotate(' + (Math.random() * 30 - 15) + 'deg)';
+    b.textContent = ['Nu... 🙈', 'Ai greșit butonul 😏', 'Serios? 🥺', 'Ultima șansă! 😅'][dodge - 1];
+  }
+
+  $('bn').addEventListener('mouseenter', run);
+  $('bn').addEventListener('touchstart', run, {passive: false});
+
+  $('bn').onclick = function() {
+    if (dodge < 4) {
+      run();
+      return;
+    }
+    answer('NU');
+  };
+
+  function render() {
+    var rows = getRows();
+    var y = rows.filter(function(r) {
+      return r.answer === 'DA';
+    }).length;
+    $('sT').textContent = rows.length;
+    $('sY').textContent = y;
+    $('sN').textContent = rows.length - y;
+    var tb = $('tb');
+    tb.textContent = '';
+    rows.forEach(function(r) {
+      var tr = document.createElement('tr');
+      [r.name, r.answer, new Date(r.at).toLocaleString('ro-RO')].forEach(function(v) {
+        var td = document.createElement('td');
+        td.textContent = v;
+        tr.appendChild(td);
+      });
+      tb.appendChild(tr);
+    });
+  }
+
+  var H_U = '12150081f9736680c4066543c21c348acbaf0a6196276403961ca146c1f17037';
+  var H_P = '6d25bf779c6cd49ba850c7c8fcbcee4a119ce9225ece08bf63ddf269f42ebff6';
+
+  async function sha(t) {
+    var b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t));
+    return Array.from(new Uint8Array(b)).map(function(x) {
+      return x.toString(16).padStart(2, '0');
+    }).join('');
+  }
+
+  function lmsg(t) {
+    var m = $('lm');
+    m.textContent = t;
+    m.className = 'msg show bad';
+  }
+
+  $('lk').onclick = function() {
+    $('invite').style.display = 'none';
+    $('login').style.display = 'block';
+    $('lk').style.display = 'none';
+    $('lm').className = 'msg';
+    $('lu').focus();
+  };
+
+  $('lc').onclick = function() {
+    $('login').style.display = 'none';
+    $('invite').style.display = 'block';
+    $('lk').style.display = 'block';
+  };
+
+  async function enter() {
+    var u = $('lu').value.trim().toLowerCase();
+    var p = $('lp').value;
+    var ok = false;
+    try {
+      ok = (await sha(u)) === H_U && (await sha(p)) === H_P;
+    } catch(e) {}
+    if (!ok) {
+      lmsg('Utilizator sau parolă greșită. Încearcă din nou 🙈');
+      return;
+    }
+    $('lp').value = '';
+    $('login').style.display = 'none';
+    $('admin').style.display = 'block';
+    render();
+  }
+
+  $('lg').onclick = enter;
+
+  $('lp').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') enter();
+  });
+
+  $('bk').onclick = function() {
+    $('admin').style.display = 'none';
+    $('invite').style.display = 'block';
+    $('lk').style.display = 'block';
+  };
+
+  var doExport = function() {
+    var rows = getRows();
+    if (!rows.length || !window.XLSX) return;
+    var data = [['Nume și Prenume', 'Răspuns', 'Data']].concat(
+      rows.map(function(r) {
+        return [r.name, r.answer, new Date(r.at).toLocaleString('ro-RO')];
+      })
+    );
+    var ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{wch: 30}, {wch: 10}, {wch: 22}];
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Raspunsuri');
+    XLSX.writeFile(wb, 'raspunsuri-invitatie.xlsx');
+  };
+
+  $('ex').onclick = doExport;
+})();
+</script>
+
+</body>
+</html>
