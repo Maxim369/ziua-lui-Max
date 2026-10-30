@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Alertă de petrecere! 🎉</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     :root {
       --bg: #dff1ff;
@@ -230,8 +229,7 @@
       font-size: 13px;
     }
 
-    input[type=text],
-    input[type=password] {
+    input[type=text] {
       width: 100%;
       padding: 14px;
       border-radius: 14px;
@@ -244,8 +242,7 @@
       transition: .2s;
     }
 
-    input[type=text]:focus,
-    input[type=password]:focus {
+    input[type=text]:focus {
       border-color: var(--mint);
     }
 
@@ -312,23 +309,6 @@
       color: #d4495c;
     }
 
-    .lock {
-      position: fixed;
-      right: 14px;
-      bottom: calc(14px + env(safe-area-inset-bottom, 0px));
-      z-index: 5;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: var(--card);
-      border: 1px solid var(--line);
-      font-size: 20px;
-      display: block;
-      flex: none;
-      padding: 0;
-      box-shadow: 0 4px 14px rgba(80, 110, 150, .25);
-    }
-
     .conf {
       position: fixed;
       top: -20px;
@@ -343,82 +323,6 @@
         transform: translateY(110vh) rotate(540deg);
         opacity: .8;
       }
-    }
-
-    #admin {
-      display: none;
-      text-align: left;
-    }
-
-    .ahead {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-
-    .ahead h2 {
-      margin: 0;
-      font-size: 20px;
-    }
-
-    .ahead small {
-      color: var(--muted);
-    }
-
-    .stats {
-      display: flex;
-      gap: 10px;
-      margin: 12px 0;
-    }
-
-    .stat {
-      flex: 1;
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 10px;
-      text-align: center;
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    .stat b {
-      font-size: 24px;
-      display: block;
-      color: var(--text);
-    }
-
-    .tw {
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-    }
-
-    th,
-    td {
-      padding: 8px;
-      border-bottom: 1px solid var(--line);
-      text-align: left;
-      white-space: nowrap;
-    }
-
-    .exp {
-      background: var(--accent);
-      color: #fff;
-      margin: 8px 0;
-      width: 100%;
-    }
-
-    .back {
-      background: var(--card);
-      color: var(--text);
-      border: 1px solid var(--line);
-      width: 100%;
     }
 
     .cal {
@@ -494,39 +398,6 @@
       margin-top: 8px;
       text-align: center;
     }
-
-    textarea {
-      width: 100%;
-      padding: 14px;
-      border-radius: 14px;
-      border: 2px solid var(--line);
-      background: var(--bg);
-      color: var(--text);
-      font-size: 16px;
-      margin: 0 0 12px;
-      outline: none;
-      transition: .2s;
-      font-family: inherit;
-      resize: vertical;
-      min-height: 70px;
-    }
-
-    textarea:focus {
-      border-color: var(--mint);
-    }
-
-    .lbl {
-      display: block;
-      font-weight: 700;
-      font-size: 14px;
-      margin: 4px 0 6px;
-    }
-
-    td.cm {
-      white-space: normal;
-      min-width: 160px;
-      max-width: 260px;
-    }
   </style>
 </head>
 <body>
@@ -534,8 +405,7 @@
   <div class="fx" id="fx"></div>
 
   <div class="wrap">
-
-    <!-- SECTIUNE INVITATIE -->
+    <!-- SECȚIUNE INVITAȚIE -->
     <div id="invite">
       <span class="tag up">🚨 Alertă de petrecere</span>
 
@@ -557,7 +427,7 @@
         <div class="row">
           <div class="ico">📅</div>
           <div>
-            <b>Vineri/simbata, 18/19 decembrie 2026</b>
+            <b>Vineri/Sâmbătă, 18/19 decembrie 2026</b>
             <span>Ora 18:00 (nu 19:00, te văd eu)</span>
             <div class="cal">
               <div class="cal-t">Decembrie 2026</div>
@@ -571,7 +441,7 @@
           <div class="ico">📍</div>
           <div style="flex: 1;">
             <b>Dumbrava</b>
-            <span>strada se afla pe loc)</span>
+            <span>(strada se află pe loc)</span>
             <div class="map-container">
               <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13244.463982198544!2d28.732693670739156!3d47.045000799034746!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40cbd66d506feba5%3A0x7b5d3fa48ea77434!2z0JTRg9C80LHRgNCw0LLQsCwg0JzQvtC70LTQvtCy0LA!5e0!3m2!1sru!2sfr!4v1792181596879!5m2!1sru!2sfr" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
             </div>
@@ -592,95 +462,15 @@
         <span class="hint">Scrie numele și prenumele, ca să știu pe cine caut dacă dispari.</span>
 
         <input id="nm" type="text" placeholder="Nume și Prenume" autocomplete="name">
-
-        <label class="lbl" for="cm">Comentariu (opțional)</label>
-        <textarea id="cm" placeholder="Alergii, +1, o urare, orice vrei..." maxlength="500"></textarea>
-
         <div class="btns">
-          <button class="yes" id="by">DA, vin! 🎉</button>
-          <button class="no" id="bn">NU 😢</button>
+          <button class="yes" id="by" type="button">DA, vin! 🎉</button>
+          <button class="no" id="bn" type="button">NU 😢</button>
         </div>
 
         <div id="msg" class="msg"></div>
       </div>
     </div>
-
-    <!-- SECTIUNE LOGIN ADMIN -->
-    <div id="login" style="display:none">
-      <div class="card up">
-        <span class="q">🔒 Autentificare admin</span>
-
-        <input id="lu" type="text" placeholder="Utilizator" autocomplete="username" autocapitalize="none">
-        <input id="lp" type="password" placeholder="Parolă" autocomplete="current-password">
-
-        <div class="btns">
-          <button class="yes" id="lg">Intră</button>
-          <button class="no" id="lc">Anulează</button>
-        </div>
-
-        <div id="lm" class="msg"></div>
-      </div>
-    </div>
-
-    <!-- PANOU ADMIN -->
-    <div id="admin">
-      <div class="ahead">
-        <svg width="52" height="52" viewBox="0 0 52 52">
-          <defs>
-            <linearGradient id="lgd" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#ffd36e"/>
-              <stop offset="1" stop-color="#ff7a8a"/>
-            </linearGradient>
-          </defs>
-          <circle cx="26" cy="26" r="25" fill="url(#lgd)"/>
-          <path d="M14 38V16l12 14 12-14v22" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="26" cy="10" r="3" fill="#fff"/>
-        </svg>
-
-        <div>
-          <h2>Panou Admin</h2>
-          <small>Cine vine și cine fuge</small>
-        </div>
-      </div>
-
-      <div class="stats">
-        <div class="stat">
-          <b id="sT">0</b>
-          Total
-        </div>
-        <div class="stat">
-          <b id="sY">0</b>
-          DA
-        </div>
-        <div class="stat">
-          <b id="sN">0</b>
-          NU
-        </div>
-      </div>
-
-      <button class="exp" id="ex">⬇ Exportă în Excel (.xlsx)</button>
-
-      <div class="card tw">
-        <table>
-          <thead>
-            <tr>
-              <th>Nume și Prenume</th>
-              <th>Răspuns</th>
-              <th>Ziua aleasă</th>
-              <th>Comentariu</th>
-              <th>Data</th>
-            </tr>
-          </thead>
-          <tbody id="tb"></tbody>
-        </table>
-      </div>
-
-      <button class="back" id="bk">← Înapoi la invitație</button>
-    </div>
-
   </div>
-
-  <button class="lock" id="lk" title="Admin">🔒</button>
 
   <script>
     (function() {
@@ -724,11 +514,7 @@
         m.className = 'msg show ' + (ok ? 'good' : 'bad');
       }
 
-      // ====== SALVARE ONLINE (Formcarry) ======
-      // Lipește aici linkul formularului de la Formcarry (https://formcarry.com/s/XXXXXXXX)
       var FORMCARRY_URL = 'https://formcarry.com/s/qSzZPy7Aixl';
-      var lastRows = [];
-
       function remoteOn() {
         return FORMCARRY_URL.indexOf('https://formcarry.com/') === 0;
       }
@@ -741,25 +527,36 @@
         }
       }
 
-      async function loadRows() {
-        return getLocal();
+      async function sendOne(url, row) {
+        var fd = new FormData();
+        fd.append('nume', row.name);
+        fd.append('raspuns', row.answer);
+        fd.append('ziua', row.day);
+        fd.append('comentariu', row.comment);
+        fd.append('data', row.at);
+        var r = await fetch(url, { method: 'POST', body: fd, headers: { 'Accept': 'application/json' } });
+        var j = {};
+        try { j = await r.json(); } catch (e) {}
+        if (!r.ok || (j.code && Number(j.code) !== 200) || j.status === 'error') {
+          throw new Error((j.message || j.title || 'HTTP ' + r.status) + ' [' + r.status + ']');
+        }
       }
 
       async function sendRemote(row) {
-        var r = await fetch(FORMCARRY_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body: JSON.stringify({
-            nume: row.name,
-            raspuns: row.answer,
-            ziua: row.day,
-            comentariu: row.comment,
-            data: row.at
-          })
-        });
-        var j = {};
-        try { j = await r.json(); } catch (e) {}
-        if (!r.ok || (j.code && j.code !== 200) || j.status === 'error') throw new Error('Formcarry: ' + (j.message || r.status));
+        var urls = [FORMCARRY_URL];
+        var last = FORMCARRY_URL.slice(-1);
+        if (last === 'l') urls.push(FORMCARRY_URL.slice(0, -1) + 'I');
+        if (last === 'I') urls.push(FORMCARRY_URL.slice(0, -1) + 'l');
+        var err;
+        for (var i = 0; i < urls.length; i++) {
+          try {
+            await sendOne(urls[i], row);
+            return;
+          } catch (e) {
+            err = e;
+          }
+        }
+        throw err;
       }
 
       var pickedDay = null;
@@ -801,16 +598,15 @@
         }
       })();
 
-      async function saveRow(n, ans, dayLabel, comment) {
+      async function saveRow(n, ans, dayLabel) {
         var row = {
           name: n,
           answer: ans,
           day: dayLabel || '',
-          comment: comment || '',
+          comment: '',
           at: new Date().toLocaleString('ro-RO'),
           id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
         };
-        // copie de siguranță în browserul invitatului
         try {
           var l = getLocal();
           l.unshift(row);
@@ -831,7 +627,7 @@
         }
         try {
           $('by').disabled = true; $('bn').disabled = true;
-          await saveRow(n, ans, ans === 'DA' ? DAYS[pickedDay] : '', $('cm').value.trim());
+          await saveRow(n, ans, ans === 'DA' ? DAYS[pickedDay] : '');
           $('by').disabled = false; $('bn').disabled = false;
           if (ans === 'DA') {
             show(n + ', ai răspuns DA ✅ Te-am trecut pe listă pentru ' + DAYS[pickedDay].toLowerCase() + '! Tortul zice că te iubește deja 🎂', true);
@@ -841,7 +637,7 @@
           }
         } catch (e) {
           $('by').disabled = false; $('bn').disabled = false;
-          show('Ups, răspunsul nu s-a salvat. Mai încearcă o dată!', false);
+          show('Ups, răspunsul nu s-a salvat. Mai încearcă o dată! (' + (e && e.message ? e.message : 'eroare') + ')', false);
         }
       }
 
@@ -870,124 +666,6 @@
         answer('NU');
       };
 
-      async function render() {
-        var tb = $('tb');
-        tb.textContent = '';
-        var rows;
-        if (remoteOn()) {
-          var trn = document.createElement('tr');
-          var tdn = document.createElement('td');
-          tdn.colSpan = 5;
-          tdn.textContent = 'Răspunsurile tuturor invitaților sunt în contul Formcarry: formcarry.com → formularul tău → Submissions → Export.';
-          trn.appendChild(tdn);
-          tb.appendChild(trn);
-        }
-        try {
-          rows = await loadRows();
-        } catch (e) {
-          $('sT').textContent = $('sY').textContent = $('sN').textContent = '0';
-          var tr0 = document.createElement('tr');
-          var td0 = document.createElement('td');
-          td0.colSpan = 5;
-          td0.textContent = 'Nu am putut încărca răspunsurile .';
-          tr0.appendChild(td0);
-          tb.appendChild(tr0);
-          return;
-        }
-        lastRows = rows;
-        var y = rows.filter(function(r) {
-          return r.answer === 'DA';
-        }).length;
-        $('sT').textContent = rows.length;
-        $('sY').textContent = y;
-        $('sN').textContent = rows.length - y;
-        rows.forEach(function(r) {
-          var tr = document.createElement('tr');
-          [r.name, r.answer, r.day || '—', r.comment || '', r.at || ''].forEach(function(v, i) {
-            var td = document.createElement('td');
-            td.textContent = v;
-            if (i === 3) td.className = 'cm';
-            tr.appendChild(td);
-          });
-          tb.appendChild(tr);
-        });
-      }
-
-      var H_U = '12150081f9736680c4066543c21c348acbaf0a6196276403961ca146c1f17037';
-      var H_P = '6d25bf779c6cd49ba850c7c8fcbcee4a119ce9225ece08bf63ddf269f42ebff6';
-
-      async function sha(t) {
-        var b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t));
-        return Array.from(new Uint8Array(b)).map(function(x) {
-          return x.toString(16).padStart(2, '0');
-        }).join('');
-      }
-
-      function lmsg(t) {
-        var m = $('lm');
-        m.textContent = t;
-        m.className = 'msg show bad';
-      }
-
-      $('lk').onclick = function() {
-        $('invite').style.display = 'none';
-        $('login').style.display = 'block';
-        $('lk').style.display = 'none';
-        $('lm').className = 'msg';
-        $('lu').focus();
-      };
-
-      $('lc').onclick = function() {
-        $('login').style.display = 'none';
-        $('invite').style.display = 'block';
-        $('lk').style.display = 'block';
-      };
-
-      async function enter() {
-        var u = $('lu').value.trim().toLowerCase();
-        var p = $('lp').value;
-        var ok = false;
-        try {
-          ok = (await sha(u)) === H_U && (await sha(p)) === H_P;
-        } catch (e) {}
-        if (!ok) {
-          lmsg('Utilizator sau parolă greșită. Încearcă din nou 🙈');
-          return;
-        }
-        $('lp').value = '';
-        $('login').style.display = 'none';
-        $('admin').style.display = 'block';
-        render();
-      }
-
-      $('lg').onclick = enter;
-
-      $('lp').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') enter();
-      });
-
-      $('bk').onclick = function() {
-        $('admin').style.display = 'none';
-        $('invite').style.display = 'block';
-        $('lk').style.display = 'block';
-      };
-
-      var doExport = function() {
-        var rows = lastRows;
-        if (!rows.length || !window.XLSX) return;
-        var data = [['Nume și Prenume', 'Răspuns', 'Ziua aleasă', 'Comentariu', 'Data']].concat(
-          rows.map(function(r) {
-            return [r.name, r.answer, r.day || '', r.comment || '', r.at || ''];
-          })
-        );
-        var ws = XLSX.utils.aoa_to_sheet(data);
-        ws['!cols'] = [{ wch: 30 }, { wch: 10 }, { wch: 20 }, { wch: 45 }, { wch: 22 }];
-        var wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, 'Raspunsuri');
-        XLSX.writeFile(wb, 'raspunsuri-invitatie.xlsx');
-      };
-
-      $('ex').onclick = doExport;
     })();
   </script>
 
