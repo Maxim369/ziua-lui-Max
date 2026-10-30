@@ -593,6 +593,9 @@
 
         <input id="nm" type="text" placeholder="Nume și Prenume" autocomplete="name">
 
+        <label class="lbl" for="cm">Comentariu (opțional)</label>
+        <textarea id="cm" placeholder="Alergii, +1, o urare, orice vrei..." maxlength="500"></textarea>
+
         <div class="btns">
           <button class="yes" id="by">DA, vin! 🎉</button>
           <button class="no" id="bn">NU 😢</button>
@@ -721,12 +724,42 @@
         m.className = 'msg show ' + (ok ? 'good' : 'bad');
       }
 
-      function getRows() {
+      // ====== SALVARE ONLINE (Formcarry) ======
+      // Lipește aici linkul formularului de la Formcarry (https://formcarry.com/s/XXXXXXXX)
+      var FORMCARRY_URL = 'https://formcarry.com/s/qSzZPy7Aixl';
+      var lastRows = [];
+
+      function remoteOn() {
+        return FORMCARRY_URL.indexOf('https://formcarry.com/') === 0;
+      }
+
+      function getLocal() {
         try {
           return JSON.parse(localStorage.getItem('rsvp_list') || '[]');
         } catch (e) {
           return [];
         }
+      }
+
+      async function loadRows() {
+        return getLocal();
+      }
+
+      async function sendRemote(row) {
+        var r = await fetch(FORMCARRY_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            nume: row.name,
+            raspuns: row.answer,
+            ziua: row.day,
+            comentariu: row.comment,
+            data: row.at
+          })
+        });
+        var j = {};
+        try { j = await r.json(); } catch (e) {}
+        if (!r.ok || (j.code && j.code !== 200) || j.status === 'error') throw new Error('Formcarry: ' + (j.message || r.status));
       }
 
       var pickedDay = null;
@@ -768,16 +801,22 @@
         }
       })();
 
-      function saveRow(n, ans, day, comment) {
-        var rows = getRows();
-        rows.unshift({
+      async function saveRow(n, ans, dayLabel, comment) {
+        var row = {
           name: n,
           answer: ans,
-          day: day || null,
+          day: dayLabel || '',
           comment: comment || '',
-          at: new Date().toISOString()
-        });
-        localStorage.setItem('rsvp_list', JSON.stringify(rows));
+          at: new Date().toLocaleString('ro-RO'),
+          id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
+        };
+        // copie de siguranță în browserul invitatului
+        try {
+          var l = getLocal();
+          l.unshift(row);
+          localStorage.setItem('rsvp_list', JSON.stringify(l));
+        } catch (e) {}
+        if (remoteOn()) await sendRemote(row);
       }
 
       async function answer(ans) {
@@ -791,7 +830,9 @@
           return;
         }
         try {
-          saveRow(n, ans, ans === 'DA' ? pickedDay : null, $('cm').value.trim());
+          $('by').disabled = true; $('bn').disabled = true;
+          await saveRow(n, ans, ans === 'DA' ? DAYS[pickedDay] : '', $('cm').value.trim());
+          $('by').disabled = false; $('bn').disabled = false;
           if (ans === 'DA') {
             show(n + ', ai răspuns DA ✅ Te-am trecut pe listă pentru ' + DAYS[pickedDay].toLowerCase() + '! Tortul zice că te iubește deja 🎂', true);
             confetti();
@@ -799,6 +840,7 @@
             show(n + ', ai răspuns NU ❌ Am notat în caiet. Tortul e dezamăgit, dar eu te iert... poate 😢', false);
           }
         } catch (e) {
+          $('by').disabled = false; $('bn').disabled = false;
           show('Ups, răspunsul nu s-a salvat. Mai încearcă o dată!', false);
         }
       }
@@ -828,19 +870,40 @@
         answer('NU');
       };
 
-      function render() {
-        var rows = getRows();
+      async function render() {
+        var tb = $('tb');
+        tb.textContent = '';
+        var rows;
+        if (remoteOn()) {
+          var trn = document.createElement('tr');
+          var tdn = document.createElement('td');
+          tdn.colSpan = 5;
+          tdn.textContent = 'Răspunsurile tuturor invitaților sunt în contul Formcarry: formcarry.com → formularul tău → Submissions → Export.';
+          trn.appendChild(tdn);
+          tb.appendChild(trn);
+        }
+        try {
+          rows = await loadRows();
+        } catch (e) {
+          $('sT').textContent = $('sY').textContent = $('sN').textContent = '0';
+          var tr0 = document.createElement('tr');
+          var td0 = document.createElement('td');
+          td0.colSpan = 5;
+          td0.textContent = 'Nu am putut încărca răspunsurile .';
+          tr0.appendChild(td0);
+          tb.appendChild(tr0);
+          return;
+        }
+        lastRows = rows;
         var y = rows.filter(function(r) {
           return r.answer === 'DA';
         }).length;
         $('sT').textContent = rows.length;
         $('sY').textContent = y;
         $('sN').textContent = rows.length - y;
-        var tb = $('tb');
-        tb.textContent = '';
         rows.forEach(function(r) {
           var tr = document.createElement('tr');
-          [r.name, r.answer, r.day ? DAYS[r.day] : '—', r.comment || '', new Date(r.at).toLocaleString('ro-RO')].forEach(function(v, i) {
+          [r.name, r.answer, r.day || '—', r.comment || '', r.at || ''].forEach(function(v, i) {
             var td = document.createElement('td');
             td.textContent = v;
             if (i === 3) td.className = 'cm';
@@ -910,11 +973,11 @@
       };
 
       var doExport = function() {
-        var rows = getRows();
+        var rows = lastRows;
         if (!rows.length || !window.XLSX) return;
         var data = [['Nume și Prenume', 'Răspuns', 'Ziua aleasă', 'Comentariu', 'Data']].concat(
           rows.map(function(r) {
-            return [r.name, r.answer, r.day ? DAYS[r.day] : '', r.comment || '', new Date(r.at).toLocaleString('ro-RO')];
+            return [r.name, r.answer, r.day || '', r.comment || '', r.at || ''];
           })
         );
         var ws = XLSX.utils.aoa_to_sheet(data);
